@@ -74,6 +74,7 @@ const AppSidebar = () => {
           <div className="px-4 py-2">
             <nav className="space-y-1">
               <SidebarItem to="/" icon={<FileText size={20} />} label="Dashboard" />
+              <SidebarItem to="/workspace" icon={<User size={20} />} label="Personal Workspace" />
               <SidebarItem to="/chat" icon={<MessageSquare size={20} />} label="Chat" />
               <SidebarItem to="/storage" icon={<Database size={20} />} label="Storage" />
               <SidebarItem to="/settings" icon={<Settings size={20} />} label="Settings" />

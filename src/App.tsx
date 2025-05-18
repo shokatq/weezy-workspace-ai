@@ -10,6 +10,7 @@ import Storage from "./pages/Storage";
 import Settings from "./pages/Settings";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
+import PersonalWorkspace from "./pages/PersonalWorkspace";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/chat" element={<Chat />} />
           <Route path="/storage" element={<Storage />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/workspace" element={<PersonalWorkspace />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
