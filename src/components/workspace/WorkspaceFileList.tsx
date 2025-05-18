@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { FileText, FileSpreadsheet, FileCode, FilePdf, FileImage, File } from 'lucide-react';
+import { FileText, FileSpreadsheet, FileCode, FileImage, File } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
@@ -28,7 +28,7 @@ const WorkspaceFileList: React.FC<WorkspaceFileListProps> = ({ files }) => {
       case 'code':
         return <FileCode className="h-4 w-4 text-purple-600" />;
       case 'pdf':
-        return <FilePdf className="h-4 w-4 text-red-500" />;
+        return <FileText className="h-4 w-4 text-red-500" />;
       case 'image':
         return <FileImage className="h-4 w-4 text-amber-500" />;
       default:

@@ -1,9 +1,8 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { FilePdf, FileText, Send } from 'lucide-react';
+import { FileText, Send } from 'lucide-react';
 
 interface Message {
   id: number;
@@ -117,11 +116,7 @@ const WorkspaceChat: React.FC = () => {
                   <div className="text-xs font-medium mb-1">Attached Files:</div>
                   {message.attachedFiles.map((file, idx) => (
                     <div key={idx} className="flex items-center gap-2 bg-background/20 rounded p-1.5 text-xs">
-                      {file.type === 'pdf' ? (
-                        <FilePdf className="h-3.5 w-3.5" />
-                      ) : (
-                        <FileText className="h-3.5 w-3.5" />
-                      )}
+                      <FileText className="h-3.5 w-3.5" />
                       <span>{file.name}</span>
                     </div>
                   ))}
