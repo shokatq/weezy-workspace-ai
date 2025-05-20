@@ -8,6 +8,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import WorkspaceFileList from './WorkspaceFileList';
 import WorkspaceChat from './WorkspaceChat';
+import { motion } from 'framer-motion';
 
 interface WorkspaceContentProps {
   localFiles: {
@@ -33,18 +34,18 @@ const WorkspaceContent: React.FC<WorkspaceContentProps> = ({ localFiles, cloudFi
     <Card className="overflow-hidden border-muted/60 shadow-sm h-full">
       <CardContent className="p-0">
         <Tabs defaultValue="files" className="w-full">
-          <div className="flex items-center justify-between border-b bg-accent/10 px-4">
+          <div className="flex items-center justify-between border-b bg-gradient-to-r from-slate-50 to-gray-50 px-4">
             <TabsList className="bg-transparent h-12">
               <TabsTrigger 
                 value="files" 
-                className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-4 h-full"
+                className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-4 h-full transition-all"
               >
                 <FileText className="mr-2 h-4 w-4" />
                 Files
               </TabsTrigger>
               <TabsTrigger 
                 value="assistant" 
-                className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-4 h-full"
+                className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-4 h-full transition-all"
               >
                 <MessageSquare className="mr-2 h-4 w-4" />
                 AI Assistant
@@ -55,7 +56,7 @@ const WorkspaceContent: React.FC<WorkspaceContentProps> = ({ localFiles, cloudFi
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="ghost" size="sm" className="text-sm">
+                    <Button variant="ghost" size="sm" className="text-sm hover:bg-accent/60 transition-colors">
                       <Bookmark className="h-4 w-4 mr-1.5" />
                       Favorites
                     </Button>
@@ -85,39 +86,47 @@ const WorkspaceContent: React.FC<WorkspaceContentProps> = ({ localFiles, cloudFi
           
           <TabsContent value="files" className="p-0 m-0">
             <div className="p-6 space-y-6">
-              <div>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+              >
                 <h3 className="text-lg font-semibold mb-3 flex items-center">
                   <span className="flex items-center">
-                    <div className="w-1.5 h-6 bg-emerald-500 rounded-sm mr-2.5"></div>
+                    <div className="w-1.5 h-6 bg-gradient-to-b from-emerald-400 to-emerald-600 rounded-sm mr-2.5"></div>
                     Local Files
                   </span>
                   <Button variant="ghost" size="icon" className="h-7 w-7 ml-2 hover:bg-accent/60">
                     <Plus className="h-4 w-4" />
                   </Button>
                 </h3>
-                <Card className="overflow-hidden shadow-sm border-muted/60">
+                <Card className="overflow-hidden shadow-sm border-muted/60 hover:shadow-md transition-shadow">
                   <CardContent className="p-0">
                     <WorkspaceFileList files={localFiles} />
                   </CardContent>
                 </Card>
-              </div>
+              </motion.div>
               
-              <div>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.2 }}
+              >
                 <h3 className="text-lg font-semibold mb-3 flex items-center">
                   <span className="flex items-center">
-                    <div className="w-1.5 h-6 bg-blue-500 rounded-sm mr-2.5"></div>
+                    <div className="w-1.5 h-6 bg-gradient-to-b from-blue-400 to-blue-600 rounded-sm mr-2.5"></div>
                     Cloud Files
                   </span>
                   <Button variant="ghost" size="icon" className="h-7 w-7 ml-2 hover:bg-accent/60">
                     <Plus className="h-4 w-4" />
                   </Button>
                 </h3>
-                <Card className="overflow-hidden shadow-sm border-muted/60">
+                <Card className="overflow-hidden shadow-sm border-muted/60 hover:shadow-md transition-shadow">
                   <CardContent className="p-0">
                     <WorkspaceFileList files={cloudFiles} />
                   </CardContent>
                 </Card>
-              </div>
+              </motion.div>
             </div>
           </TabsContent>
           
