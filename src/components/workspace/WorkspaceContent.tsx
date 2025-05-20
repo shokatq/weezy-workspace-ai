@@ -3,11 +3,12 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { FileText, MessageSquare, Bookmark, MoreHorizontal, Plus } from 'lucide-react';
+import { FileText, MessageSquare, Bookmark, MoreHorizontal, Plus, List } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import WorkspaceFileList from './WorkspaceFileList';
 import WorkspaceChat from './WorkspaceChat';
+import TaskList from '../tasks/TaskList';
 import { motion } from 'framer-motion';
 
 interface WorkspaceContentProps {
@@ -49,6 +50,13 @@ const WorkspaceContent: React.FC<WorkspaceContentProps> = ({ localFiles, cloudFi
               >
                 <MessageSquare className="mr-2 h-4 w-4" />
                 AI Assistant
+              </TabsTrigger>
+              <TabsTrigger 
+                value="tasks" 
+                className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-4 h-full transition-all"
+              >
+                <List className="mr-2 h-4 w-4" />
+                Tasks
               </TabsTrigger>
             </TabsList>
             
@@ -131,11 +139,33 @@ const WorkspaceContent: React.FC<WorkspaceContentProps> = ({ localFiles, cloudFi
           </TabsContent>
           
           <TabsContent value="assistant" className="p-0 m-0">
-            <Card className="border-none shadow-none h-[600px]">
-              <CardContent className="p-0 h-full">
-                <WorkspaceChat />
-              </CardContent>
-            </Card>
+            <div className="flex flex-col space-y-4">
+              <Card className="border-none shadow-none h-[600px]">
+                <CardContent className="p-0 h-full">
+                  <WorkspaceChat />
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="tasks" className="p-0 m-0">
+            <div className="p-6 space-y-4">
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold flex items-center">
+                    <span className="flex items-center">
+                      <div className="w-1.5 h-6 bg-gradient-to-b from-purple-400 to-purple-600 rounded-sm mr-2.5"></div>
+                      Task Management
+                    </span>
+                  </h3>
+                </div>
+                <TaskList />
+              </motion.div>
+            </div>
           </TabsContent>
         </Tabs>
       </CardContent>
