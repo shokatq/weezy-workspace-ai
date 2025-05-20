@@ -8,12 +8,18 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import WorkspaceFileList from '@/components/workspace/WorkspaceFileList';
 import WorkspaceChat from '@/components/workspace/WorkspaceChat';
-import { FileText, MessageSquare, Search, Upload, Download, Plus, Calendar, Star, Bookmark, Clock, Settings, Users } from 'lucide-react';
+import { 
+  FileText, MessageSquare, Search, Upload, Download, Plus, Calendar, 
+  Star, Clock, Settings, Users, Bookmark, MoreHorizontal, Filter,
+  ChevronDown, ExternalLink, Layout, Layers, Command, Palette
+} from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from '@/components/ui/navigation-menu';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarSeparator, MenubarShortcut, MenubarTrigger } from '@/components/ui/menubar';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuGroup, DropdownMenuLabel, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
+import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
 const PersonalWorkspace = () => {
@@ -21,6 +27,7 @@ const PersonalWorkspace = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [workspaceName, setWorkspaceName] = useState('Acme Corporation');
   const [isEditing, setIsEditing] = useState(false);
+  const [view, setView] = useState<'list' | 'grid'>('list');
   
   // Mock data for workspace files
   const localFiles = [
@@ -71,7 +78,16 @@ const PersonalWorkspace = () => {
   };
 
   const quickActions = [
-    { icon: Plus, label: "New Document", action: () => toast({ title: "Creating new document" }) },
+    { 
+      icon: Plus, 
+      label: "New", 
+      action: () => {}, 
+      dropdown: [
+        { label: "Document", icon: FileText, action: () => toast({ title: "Creating new document" }) },
+        { label: "Spreadsheet", icon: Layout, action: () => toast({ title: "Creating new spreadsheet" }) },
+        { label: "Presentation", icon: Layers, action: () => toast({ title: "Creating new presentation" }) }
+      ]
+    },
     { icon: Upload, label: "Upload", action: handleFileUpload },
     { icon: Calendar, label: "Schedule", action: () => toast({ title: "Opening calendar" }) },
     { icon: Users, label: "Invite", action: () => toast({ title: "Invite team members" }) },
@@ -80,44 +96,65 @@ const PersonalWorkspace = () => {
   return (
     <MainLayout>
       <div className="space-y-6">
-        {/* Top navigation bar */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b">
+        {/* Top navigation bar with modern design */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b bg-gradient-to-r from-background to-accent/10 -mx-6 px-6 pt-3">
           <div className="flex items-center">
             {isEditing ? (
               <Input 
                 value={workspaceName} 
                 onChange={(e) => setWorkspaceName(e.target.value)}
-                className="text-xl font-bold h-9 max-w-[300px]"
+                className="text-xl font-bold h-10 max-w-[300px] bg-background/80"
                 autoFocus
                 onBlur={handleNameChange}
                 onKeyDown={(e) => e.key === 'Enter' && handleNameChange()}
               />
             ) : (
-              <h1 
-                className="text-xl font-bold cursor-pointer hover:bg-accent px-2 py-1 rounded-md" 
-                onClick={() => setIsEditing(true)}
-              >
-                Weezy – {workspaceName}
-              </h1>
+              <div className="flex items-center">
+                <h1 
+                  className="text-xl font-bold cursor-pointer hover:bg-accent/50 px-3 py-1.5 rounded-md transition-colors" 
+                  onClick={() => setIsEditing(true)}
+                >
+                  <span className="text-primary/80 font-normal">Weezy –</span> {workspaceName}
+                </h1>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="ghost" size="icon" className="ml-1 text-muted-foreground h-8 w-8">
+                        <Star className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Favorite workspace</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
             )}
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="ghost" size="icon" className="ml-2 text-muted-foreground">
-                    <Star className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Favorite workspace</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
           </div>
           
           <div className="flex items-center gap-2">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <Palette className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Customize theme</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            
+            <Button variant="outline" size="sm" className="hidden md:flex items-center">
+              <Command className="h-3.5 w-3.5 mr-1.5" />
+              <span className="text-xs">Search</span>
+              <Badge variant="outline" className="ml-2 text-[10px] px-1 py-0 font-normal">⌘K</Badge>
+            </Button>
+            
             <Menubar className="border-none">
               <MenubarMenu>
-                <MenubarTrigger>File</MenubarTrigger>
+                <MenubarTrigger className="text-sm">File</MenubarTrigger>
                 <MenubarContent>
                   <MenubarItem>New Document <MenubarShortcut>⌘N</MenubarShortcut></MenubarItem>
                   <MenubarItem>Open <MenubarShortcut>⌘O</MenubarShortcut></MenubarItem>
@@ -129,7 +166,7 @@ const PersonalWorkspace = () => {
                 </MenubarContent>
               </MenubarMenu>
               <MenubarMenu>
-                <MenubarTrigger>Edit</MenubarTrigger>
+                <MenubarTrigger className="text-sm">Edit</MenubarTrigger>
                 <MenubarContent>
                   <MenubarItem>Undo <MenubarShortcut>⌘Z</MenubarShortcut></MenubarItem>
                   <MenubarItem>Redo <MenubarShortcut>⇧⌘Z</MenubarShortcut></MenubarItem>
@@ -140,9 +177,17 @@ const PersonalWorkspace = () => {
                 </MenubarContent>
               </MenubarMenu>
               <MenubarMenu>
-                <MenubarTrigger>View</MenubarTrigger>
+                <MenubarTrigger className="text-sm">View</MenubarTrigger>
                 <MenubarContent>
-                  <MenubarItem>Toggle Sidebar</MenubarItem>
+                  <MenubarItem onClick={() => setView('list')}>
+                    List View
+                    {view === 'list' && <MenubarShortcut>✓</MenubarShortcut>}
+                  </MenubarItem>
+                  <MenubarItem onClick={() => setView('grid')}>
+                    Grid View
+                    {view === 'grid' && <MenubarShortcut>✓</MenubarShortcut>}
+                  </MenubarItem>
+                  <MenubarSeparator />
                   <MenubarItem>Focus Mode</MenubarItem>
                   <MenubarItem>Full Screen <MenubarShortcut>F11</MenubarShortcut></MenubarItem>
                 </MenubarContent>
@@ -152,22 +197,30 @@ const PersonalWorkspace = () => {
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger>Share</NavigationMenuTrigger>
+                  <NavigationMenuTrigger className="h-8 px-2 text-sm">Share</NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <ul className="grid gap-2 p-2 w-[180px]">
+                    <ul className="grid gap-2 p-2 w-[220px]">
                       <li>
                         <NavigationMenuLink asChild>
-                          <Button variant="ghost" className="w-full justify-start">
+                          <Button variant="ghost" className="w-full justify-start text-sm">
                             <Users className="mr-2 h-4 w-4" />
-                            <span>Invite Team</span>
+                            <span>Invite Team Members</span>
                           </Button>
                         </NavigationMenuLink>
                       </li>
                       <li>
                         <NavigationMenuLink asChild>
-                          <Button variant="ghost" className="w-full justify-start">
+                          <Button variant="ghost" className="w-full justify-start text-sm">
                             <FileText className="mr-2 h-4 w-4" />
-                            <span>Share File</span>
+                            <span>Share Current File</span>
+                          </Button>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Button variant="ghost" className="w-full justify-start text-sm">
+                            <ExternalLink className="mr-2 h-4 w-4" />
+                            <span>Get Public Link</span>
                           </Button>
                         </NavigationMenuLink>
                       </li>
@@ -179,87 +232,128 @@ const PersonalWorkspace = () => {
             
             <Avatar className="h-8 w-8">
               <AvatarImage src="" />
-              <AvatarFallback>AC</AvatarFallback>
+              <AvatarFallback className="bg-gradient-to-br from-primary/70 to-primary text-white">AC</AvatarFallback>
             </Avatar>
           </div>
         </div>
 
-        {/* Quick actions bar */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-2">
-            {quickActions.map((action, index) => (
-              <Button 
-                key={index}
-                variant="outline" 
-                size="sm" 
-                className="bg-card hover:bg-accent"
-                onClick={action.action}
-              >
-                <action.icon className="mr-1 h-4 w-4" />
-                {action.label}
-              </Button>
-            ))}
+        {/* Quick actions bar with dropdowns */}
+        <div className="flex flex-wrap items-center justify-between mb-6 gap-3">
+          <div className="flex items-center gap-2 flex-wrap">
+            {quickActions.map((action, index) => 
+              action.dropdown ? (
+                <DropdownMenu key={index}>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="bg-card hover:bg-accent transition-colors"
+                    >
+                      <action.icon className="mr-1.5 h-3.5 w-3.5" />
+                      {action.label}
+                      <ChevronDown className="ml-1 h-3.5 w-3.5" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuLabel>Create new</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {action.dropdown.map((item, idx) => (
+                      <DropdownMenuItem key={idx} onClick={item.action}>
+                        <item.icon className="mr-2 h-4 w-4" />
+                        {item.label}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Button 
+                  key={index}
+                  variant="outline" 
+                  size="sm" 
+                  className="bg-card hover:bg-accent transition-colors"
+                  onClick={action.action}
+                >
+                  <action.icon className="mr-1.5 h-3.5 w-3.5" />
+                  {action.label}
+                </Button>
+              )
+            )}
           </div>
           
-          <div className="relative">
-            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search workspace..."
-              className="pl-8 h-9 w-[200px] lg:w-[280px]"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+          <div className="flex items-center gap-2">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="outline" size="sm" className="h-8 w-8 p-0">
+                    <Filter className="h-3.5 w-3.5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>Filter files</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            
+            <div className="relative">
+              <Search className="absolute left-2.5 top-[7px] h-3.5 w-3.5 text-muted-foreground" />
+              <Input
+                placeholder="Search workspace..."
+                className="pl-8 h-8 w-[200px] lg:w-[280px] text-sm"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-          {/* Sidebar */}
+          {/* Sidebar with improved visuals */}
           <div className="md:col-span-3">
             <div className="space-y-6">
-              {/* Recent files */}
-              <Card className="overflow-hidden">
-                <CardHeader className="py-3 px-4">
+              {/* Recent files with improved visuals */}
+              <Card className="overflow-hidden shadow-sm border-muted/60">
+                <CardHeader className="py-3 px-4 bg-accent/20 border-b border-border/50">
                   <CardTitle className="text-base flex items-center justify-between">
                     <span className="flex items-center">
-                      <Clock className="h-4 w-4 mr-2" />
+                      <Clock className="h-4 w-4 mr-2 text-primary/70" />
                       Recent Files
                     </span>
-                    <Button variant="ghost" size="icon" className="h-6 w-6">
+                    <Button variant="ghost" size="icon" className="h-6 w-6 hover:bg-background/80">
                       <Plus className="h-3.5 w-3.5" />
                     </Button>
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="px-2 py-0">
+                <CardContent className="px-2 py-1">
                   <WorkspaceFileList files={recentFiles} />
                 </CardContent>
               </Card>
               
-              {/* Workspace tools */}
-              <Card className="overflow-hidden">
-                <CardHeader className="py-3 px-4">
+              {/* Workspace tools with better styling */}
+              <Card className="overflow-hidden shadow-sm border-muted/60">
+                <CardHeader className="py-3 px-4 bg-accent/20 border-b border-border/50">
                   <CardTitle className="text-base flex items-center">
-                    <Settings className="h-4 w-4 mr-2" />
+                    <Settings className="h-4 w-4 mr-2 text-primary/70" />
                     Workspace Tools
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="px-4 py-3 space-y-3">
-                  <Button variant="outline" className="w-full justify-start" onClick={handleFileUpload}>
-                    <Upload className="mr-2 h-4 w-4" />
+                <CardContent className="px-4 py-3 space-y-2.5">
+                  <Button variant="outline" className="w-full justify-start text-sm h-9 bg-background/50 hover:bg-accent/60" onClick={handleFileUpload}>
+                    <Upload className="mr-2 h-4 w-4 text-primary/70" />
                     Import Files
                   </Button>
-                  <Button variant="outline" className="w-full justify-start" onClick={handleDownload}>
-                    <Download className="mr-2 h-4 w-4" />
+                  <Button variant="outline" className="w-full justify-start text-sm h-9 bg-background/50 hover:bg-accent/60" onClick={handleDownload}>
+                    <Download className="mr-2 h-4 w-4 text-primary/70" />
                     Export Files
                   </Button>
                 </CardContent>
                 <CardFooter className="px-4 py-3 border-t">
                   <div className="text-xs text-muted-foreground w-full">
-                    <div className="flex justify-between items-center mb-1">
-                      <span>Storage</span>
+                    <div className="flex justify-between items-center mb-1.5">
+                      <span className="font-medium">Storage</span>
                       <span>3.5GB / 10GB</span>
                     </div>
-                    <div className="w-full bg-muted rounded-full h-1.5">
-                      <div className="bg-primary h-1.5 rounded-full" style={{ width: '35%' }}></div>
+                    <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
+                      <div className="bg-gradient-to-r from-primary/80 to-primary h-2 rounded-full" style={{ width: '35%' }}></div>
                     </div>
                   </div>
                 </CardFooter>
@@ -267,18 +361,24 @@ const PersonalWorkspace = () => {
             </div>
           </div>
 
-          {/* Main content area */}
+          {/* Main content area with improved visuals */}
           <div className="md:col-span-9">
-            <Card className="overflow-hidden border-none shadow-sm">
+            <Card className="overflow-hidden border-muted/60 shadow-sm h-full">
               <CardContent className="p-0">
                 <Tabs defaultValue="files" className="w-full">
-                  <div className="flex items-center justify-between border-b px-4">
+                  <div className="flex items-center justify-between border-b bg-accent/10 px-4">
                     <TabsList className="bg-transparent h-12">
-                      <TabsTrigger value="files" className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-4">
+                      <TabsTrigger 
+                        value="files" 
+                        className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-4 h-full"
+                      >
                         <FileText className="mr-2 h-4 w-4" />
                         Files
                       </TabsTrigger>
-                      <TabsTrigger value="assistant" className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-4">
+                      <TabsTrigger 
+                        value="assistant" 
+                        className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-4 h-full"
+                      >
                         <MessageSquare className="mr-2 h-4 w-4" />
                         AI Assistant
                       </TabsTrigger>
@@ -288,8 +388,8 @@ const PersonalWorkspace = () => {
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Button variant="ghost" size="sm">
-                              <Bookmark className="h-4 w-4 mr-1" />
+                            <Button variant="ghost" size="sm" className="text-sm">
+                              <Bookmark className="h-4 w-4 mr-1.5" />
                               Favorites
                             </Button>
                           </TooltipTrigger>
@@ -298,19 +398,37 @@ const PersonalWorkspace = () => {
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
+                      
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem>Refresh</DropdownMenuItem>
+                          <DropdownMenuItem>Sort by name</DropdownMenuItem>
+                          <DropdownMenuItem>Sort by date</DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem>View settings</DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
                   </div>
                   
                   <TabsContent value="files" className="p-0 m-0">
-                    <div className="p-4 space-y-6">
+                    <div className="p-6 space-y-6">
                       <div>
-                        <h3 className="text-lg font-semibold mb-2 flex items-center">
-                          <span className="flex items-center">Local Files</span>
-                          <Button variant="ghost" size="icon" className="h-7 w-7 ml-2">
+                        <h3 className="text-lg font-semibold mb-3 flex items-center">
+                          <span className="flex items-center">
+                            <div className="w-1.5 h-6 bg-emerald-500 rounded-sm mr-2.5"></div>
+                            Local Files
+                          </span>
+                          <Button variant="ghost" size="icon" className="h-7 w-7 ml-2 hover:bg-accent/60">
                             <Plus className="h-4 w-4" />
                           </Button>
                         </h3>
-                        <Card className="overflow-hidden">
+                        <Card className="overflow-hidden shadow-sm border-muted/60">
                           <CardContent className="p-0">
                             <WorkspaceFileList files={localFiles} />
                           </CardContent>
@@ -318,13 +436,16 @@ const PersonalWorkspace = () => {
                       </div>
                       
                       <div>
-                        <h3 className="text-lg font-semibold mb-2 flex items-center">
-                          <span className="flex items-center">Cloud Files</span>
-                          <Button variant="ghost" size="icon" className="h-7 w-7 ml-2">
+                        <h3 className="text-lg font-semibold mb-3 flex items-center">
+                          <span className="flex items-center">
+                            <div className="w-1.5 h-6 bg-blue-500 rounded-sm mr-2.5"></div>
+                            Cloud Files
+                          </span>
+                          <Button variant="ghost" size="icon" className="h-7 w-7 ml-2 hover:bg-accent/60">
                             <Plus className="h-4 w-4" />
                           </Button>
                         </h3>
-                        <Card className="overflow-hidden">
+                        <Card className="overflow-hidden shadow-sm border-muted/60">
                           <CardContent className="p-0">
                             <WorkspaceFileList files={cloudFiles} />
                           </CardContent>
